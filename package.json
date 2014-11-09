@@ -16,6 +16,10 @@
     "http",
     "reqwest"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/argo-rest/any-http-reqwest.git"
+  },
   "author": "Sébastien Cevey <seb@cine7.net>",
   "license": "Apache-2"
 }
