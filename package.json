@@ -1,0 +1,21 @@
+{
+  "name": "any-http-reqwest",
+  "version": "0.1.0",
+  "description": "AnyHTTP adapter for the reqwest library",
+  "homepage": "https://github.com/argo-rest/any-http-reqwest",
+  "main": "index.js",
+  "dependencies": {
+    "reqwest": "^1.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "anyhttp",
+    "http",
+    "reqwest"
+  ],
+  "author": "Sébastien Cevey <seb@cine7.net>",
+  "license": "Apache-2"
+}
