@@ -1,7 +1,7 @@
 # AnyHTTP adapter for reqwest
 
-AnyHTTP adapter for the [reqwest](https://github.com/ded/reqwest) AJAX
-micro-library.
+[AnyHTTP](https://github.com/argo-rest/any-http) adapter for the
+[reqwest](https://github.com/ded/reqwest) AJAX micro-library.
 
 ## Usage
 
