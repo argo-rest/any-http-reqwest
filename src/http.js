@@ -12,7 +12,7 @@ function getHeaders(request) {
 function dispatch(method, uri, data) {
   // Note: don't use reqwest's promises that are not A+-compliant
   return new Promise((resolve, reject) => {
-    var req = reqwest({
+    var {request} = reqwest({
       url:     uri,
       method:  method,
       type:    'json',
@@ -27,9 +27,9 @@ function dispatch(method, uri, data) {
 // TODO: optional:
       crossOrigin: true,
       //withCredentials: true,
-      success: (body) => resolve({uri: uri, body: body, status: req.status, headers: getHeaders(req.request)}),
+      success: (body) => resolve({uri: uri, body: body, status: request.status, headers: getHeaders(request)}),
       // FIXME: parse response iff json content-type
-      error:   ()     => reject( {uri: uri, body: req.request.response, status: req.status, headers: getHeaders(req.request)})
+      error:   ()     => reject( {uri: uri, body: request.response, status: request.status, headers: getHeaders(request)})
     });
   });
 }
