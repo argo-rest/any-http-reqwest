@@ -11,9 +11,9 @@
     "karma": "^0.12.24",
     "karma-chai": "^0.1.0",
     "karma-chai-plugins": "^0.2.3",
+    "karma-chrome-launcher": "^0.1.5",
     "karma-jspm": "^1.0.1",
-    "karma-mocha": "^0.1.9",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-mocha": "^0.1.9"
   },
   "scripts": {
     "test": "node_modules/karma/bin/karma start test/karma.conf.js"
