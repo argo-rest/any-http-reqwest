@@ -10,6 +10,8 @@ function getHeaders(request) {
 }
 
 function dispatch(method, uri, data) {
+  if (typeof uri !== 'string' || uri === '') throw new Error()
+
   // Note: don't use reqwest's promises that are not A+-compliant
   return new Promise((resolve, reject) => {
     var {request} = reqwest({

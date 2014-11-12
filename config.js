@@ -8,7 +8,6 @@ System.config({
 
 System.config({
   "map": {
-    "npm:chai": "npm:chai@^1.9.2",
     "reqwest": "github:ded/reqwest@^1.1.5",
     "npm:assertion-error@1.0.0": {},
     "npm:chai@1.9.2": {
@@ -29,7 +28,6 @@ System.config({
     "github:ded/reqwest": "1.1.5",
     "github:jspm/nodelibs": "0.0.5",
     "npm:assertion-error": "1.0.0",
-    "npm:chai": "1.9.2",
     "npm:deep-eql": "0.1.3",
     "npm:json": "9.0.2",
     "npm:type-detect": "0.1.1"
