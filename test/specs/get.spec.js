@@ -35,7 +35,7 @@ describe('Http', () => {
         });
 
 
-        it.skip('should return a Promise', (done) => {
+        it('should return a Promise', () => {
             // TODO: make it work
             var xhr = sinon.useFakeXMLHttpRequest();
 
@@ -46,7 +46,7 @@ describe('Http', () => {
             xhr.restore();
         });
 
-        it.skip('should issue a request with the GET method', (done) => {
+        it.skip('should issue a request with the GET method', () => {
             // TODO: make it work
             var xhr = sinon.useFakeXMLHttpRequest();
 
@@ -62,7 +62,7 @@ describe('Http', () => {
             xhr.restore();
         });
 
-        it('should issue a request to the given uri', (done) => {
+        it('should issue a request to the given uri', () => {
             var server = sinon.fakeServer.create();
             server.respondWith("GET", "http://example.com",
                                [200,
@@ -72,11 +72,11 @@ describe('Http', () => {
             var callback = sinon.spy();
             var errback = sinon.spy();
 
-            http.get('http://example.com').then(callback, errback);
+            var resp = http.get('http://example.com').then(callback, errback);
 
             server.respond();
 
-            setTimeout(function() {
+            return resp.then(() => {
                 callback.should.have.been.calledWith({
                     uri: 'http://example.com',
                     body: {a: 1},
@@ -86,12 +86,10 @@ describe('Http', () => {
                 errback.should.not.have.been.called;
 
                 server.restore();
-                done();
-            })
-
+            });
         });
 
-        it('should serialise the parameters in the requested uri', (done) => {
+        it('should serialise the parameters in the requested uri', () => {
             var server = sinon.fakeServer.create();
             server.respondWith("GET", "http://example.com?x=1&y=z",
                                [200,
@@ -101,11 +99,11 @@ describe('Http', () => {
             var callback = sinon.spy();
             var errback = sinon.spy();
 
-            http.get('http://example.com', {x: 1, y: 'z'}).then(callback, errback);
+            var resp = http.get('http://example.com', {x: 1, y: 'z'}).then(callback, errback);
 
             server.respond();
 
-            setTimeout(function() {
+            return resp.then(() => {
                 callback.should.have.been.calledWith({
                     uri: 'http://example.com',
                     body: {a: 1},
@@ -115,8 +113,7 @@ describe('Http', () => {
                 errback.should.not.have.been.called;
 
                 server.restore();
-                done();
-            })
+            });
         });
 
         // TODO: if params are not an object? or contains smt not an int, string, etc?
@@ -145,7 +142,7 @@ describe('Http', () => {
         it.skip('should not send any data in the request', (done) => {
         });
 
-        it('should return all the response information of a JSON response', (done) => {
+        it('should return all the response information of a JSON response', () => {
             var server = sinon.fakeServer.create();
             server.respondWith("GET", "http://example.com",
                                [200,
@@ -155,11 +152,11 @@ describe('Http', () => {
             var callback = sinon.spy();
             var errback = sinon.spy();
 
-            http.get('http://example.com').then(callback, errback);
+            var resp = http.get('http://example.com').then(callback, errback);
 
             server.respond();
 
-            setTimeout(function() {
+            return resp.then(() => {
                 callback.should.have.been.calledWith({
                     uri: 'http://example.com',
                     body: {a: 1},
@@ -167,13 +164,12 @@ describe('Http', () => {
                     status: 200
                 });
                 errback.should.not.have.been.called;
-                done();
-            })
+            });
         });
 
         // FIXME: fails because the response is not set, only
         // responseText, which needs parsing based on the Content-Type
-        it.skip('should return a rejected Promise with all the response information in case of 404 error', (done) => {
+        it.skip('should return a rejected Promise with all the response information in case of 404 error', () => {
             var server = sinon.fakeServer.create();
             server.respondWith("GET", "http://example.com",
                                [404,
@@ -183,11 +179,11 @@ describe('Http', () => {
             var callback = sinon.spy();
             var errback = sinon.spy();
 
-            http.get('http://example.com').then(callback, errback);
+            var resp = http.get('http://example.com').then(callback, errback);
 
             server.respond();
 
-            setTimeout(function() {
+            return resp.then(() => {
                 errback.should.have.been.calledWith({
                     uri: 'http://example.com',
                     body: { "err": "or" },
@@ -195,8 +191,7 @@ describe('Http', () => {
                     status: 404
                 });
                 callback.should.not.have.been.called;
-                done();
-            })
+            });
         });
 
         // TODO: errors
