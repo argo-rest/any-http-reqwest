@@ -31,7 +31,7 @@ function dispatch(method, uri, data) {
       //withCredentials: true,
       success: (body) => resolve({uri: uri, body: body, status: request.status, headers: getHeaders(request)}),
       // FIXME: parse response iff json content-type
-      error:   ()     => reject( {uri: uri, body: request.response, status: request.status, headers: getHeaders(request)})
+      error:   ()     => reject( {uri: uri, body: request.responseText, status: request.status, headers: getHeaders(request)})
     });
   });
 }

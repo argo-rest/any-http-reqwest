@@ -171,6 +171,34 @@ describe('Http', () => {
             })
         });
 
+        // FIXME: fails because the response is not set, only
+        // responseText, which needs parsing based on the Content-Type
+        it.skip('should return a rejected Promise with all the response information in case of 404 error', (done) => {
+            var server = sinon.fakeServer.create();
+            server.respondWith("GET", "http://example.com",
+                               [404,
+                                { "Content-Type": "application/json" },
+                                '{ "err": "or" }']);
+
+            var callback = sinon.spy();
+            var errback = sinon.spy();
+
+            http.get('http://example.com').then(callback, errback);
+
+            server.respond();
+
+            setTimeout(function() {
+                errback.should.have.been.calledWith({
+                    uri: 'http://example.com',
+                    body: { "err": "or" },
+                    headers: {'Content-Type': 'application/json'},
+                    status: 404
+                });
+                callback.should.not.have.been.called;
+                done();
+            })
+        });
+
         // TODO: errors
         // TODO: promise adapter?
     });
