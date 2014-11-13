@@ -39,7 +39,7 @@ function dispatch(method, uri, data) {
 
 export class Http {
 
-  get(uri, params, implemOptions) {
+  get(uri, params, options) {
     return dispatch('get', uri, params);
   }
 

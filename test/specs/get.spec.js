@@ -78,6 +78,7 @@ describe('Http', () => {
             // TODO: url encode params
             // TODO: fail if params not an Object?
             // TODO: ignore if undefined, null or empty Object
+            // TODO: fail if options not an Object?
 
             it('should not send any data in the request', () => {
                 http.get('http://example.com', {a: 1});
