@@ -22,7 +22,7 @@ describe('Http', () => {
 
         it('should fail if non-string uri is given', () => {
             (() => {
-                http.get('');
+                http.get({});
             }).should.throw()
             // FIXME: catch error
         });
@@ -36,7 +36,6 @@ describe('Http', () => {
 
 
         it('should return a Promise', () => {
-            // TODO: make it work
             var xhr = sinon.useFakeXMLHttpRequest();
 
             var ret = http.get('http://example.com');
@@ -46,157 +45,152 @@ describe('Http', () => {
             xhr.restore();
         });
 
-        it.skip('should issue a request with the GET method', () => {
-            // TODO: make it work
-            var xhr = sinon.useFakeXMLHttpRequest();
+        describe('request', () => {
+            var requests;
+            var xhr;
 
-            xhr.onCreate = function (xhr) {
-                sinon.spy(xhr, 'open');
-                console.log("IN")
-                xhr.open.should.have.been.calledWith('getx')
-            };
+            beforeEach(() => {
+                requests = [];
 
-            http.get('http://example.com');
+                xhr = sinon.useFakeXMLHttpRequest();
+                xhr.onCreate = function (xhr) {
+                    requests.push(xhr);
+                };
+            });
 
+            afterEach(() => {
+                xhr.restore();
+            });
 
-            xhr.restore();
+            it('should issue a request to the URL with the GET method', () => {
+                http.get('http://example.com');
+
+                requests[0].url.should.equal('http://example.com');
+                requests[0].method.should.equal('GET');
+            });
+
+            it('should serialise the parameters in the requested uri', () => {
+                http.get('http://example.com', {x: 1, y: 'z'});
+
+                requests[0].url.should.equal('http://example.com?x=1&y=z');
+            });
+
+            // TODO: url encode params
+            // TODO: fail if params not an Object?
+            // TODO: ignore if undefined, null or empty Object
+
+            it('should not send any data in the request', () => {
+                http.get('http://example.com', {a: 1});
+
+                expect(requests[0].requestBody).to.be.null;
+            });
+
+            it.skip('should pass the contentType option to the XHR', () => {
+                // FIXME: or just shouldn't be set for GET?
+            });
+
+            it.skip('should pass the headers option to the XHR', () => {
+                // FIXME: fix test
+                http.get('http://example.com', {}, {headers: {'X-Test': 'ok'}});
+
+                requests[0].headers['X-Test'].should.equal('ok');
+            });
+
+            it('should pass withCredentials=false to the XHR by default', () => {
+                http.get('http://example.com', {a: 1});
+
+                requests[0].withCredentials.should.equal(false);
+            });
+
+            it.skip('should pass the withCredentials option to the XHR', () => {
+                // FIXME: fix test
+                http.get('http://example.com', {}, {withCredentials: true});
+
+                requests[0].withCredentials.should.equal(true);
+            });
+
+            it.skip('should pass underlying options to reqwest', () => {
+                // FIXME: fix test
+                http.get('http://example.com', {}, {underlying: {url: 'http://hijack.com'}});
+
+                requests[0].url.should.equal('http://hijack.com');
+            });
+
+            // TODO: type?
+            // FIXME: always on?
+            // it('should pass the crossOrigin option to the XHR', (done) => {
+            // });
         });
 
-        it('should issue a request to the given uri', () => {
-            var server = sinon.fakeServer.create();
-            server.respondWith("GET", "http://example.com",
-                               [200,
-                                { "Content-Type": "application/json" },
-                                '{ "a": 1 }']);
 
-            var callback = sinon.spy();
-            var errback = sinon.spy();
+        describe('response', () => {
+            var server;
+            var callback;
+            var errback;
 
-            var resp = http.get('http://example.com').then(callback, errback);
+            beforeEach(() => {
+                server = sinon.fakeServer.create();
 
-            server.respond();
+                callback = sinon.spy();
+                errback = sinon.spy();
+            });
 
-            return resp.then(() => {
-                callback.should.have.been.calledWith({
-                    uri: 'http://example.com',
-                    body: {a: 1},
-                    headers: {'Content-Type': 'application/json'},
-                    status: 200
-                });
-                errback.should.not.have.been.called;
-
+            afterEach(() => {
                 server.restore();
             });
-        });
 
-        it('should serialise the parameters in the requested uri', () => {
-            var server = sinon.fakeServer.create();
-            server.respondWith("GET", "http://example.com?x=1&y=z",
-                               [200,
-                                { "Content-Type": "application/json" },
-                                '{ "a": 1 }']);
+            it('should return all the response information of a JSON response', () => {
+                server.respondWith("GET", "http://example.com",
+                                   [200,
+                                    { "Content-Type": "application/json" },
+                                    '{ "a": 1 }']);
 
-            var callback = sinon.spy();
-            var errback = sinon.spy();
+                var resp = http.get('http://example.com').then(callback, errback);
 
-            var resp = http.get('http://example.com', {x: 1, y: 'z'}).then(callback, errback);
+                server.respond();
 
-            server.respond();
-
-            return resp.then(() => {
-                callback.should.have.been.calledWith({
-                    uri: 'http://example.com',
-                    body: {a: 1},
-                    headers: {'Content-Type': 'application/json'},
-                    status: 200
+                return resp.then(() => {
+                    callback.should.have.been.calledWith({
+                        uri: 'http://example.com',
+                        body: {a: 1},
+                        headers: {'Content-Type': 'application/json'},
+                        status: 200
+                    });
+                    errback.should.not.have.been.called;
                 });
-                errback.should.not.have.been.called;
-
-                server.restore();
             });
-        });
 
-        // TODO: if params are not an object? or contains smt not an int, string, etc?
 
-        // FIXME: always on?
-        // it('should pass the crossOrigin option to the XHR', (done) => {
-        // });
+            // FIXME: fails because the response is not set, only
+            // responseText, which needs parsing based on the Content-Type
+            it.skip('should return a rejected Promise with all the response information in case of 404 error', () => {
+                var server = sinon.fakeServer.create();
+                server.respondWith("GET", "http://example.com",
+                                   [404,
+                                    { "Content-Type": "application/json" },
+                                    '{ "err": "or" }']);
 
-        it.skip('should pass withCredentials=false to the XHR by default', (done) => {
-        });
+                var callback = sinon.spy();
+                var errback = sinon.spy();
 
-        it.skip('should pass the withCredentials option to the XHR', (done) => {
-        });
+                var resp = http.get('http://example.com').then(callback, errback);
 
-        it.skip('should pass the contentType option to the XHR', (done) => {
-            // FIXME: or just shouldn't be set?
-        });
+                server.respond();
 
-        it.skip('should pass the headers option to the XHR', (done) => {
-            // FIXME: or just shouldn't be set?
-        });
-
-        // TODO: pass underlying options?
-        // TODO: type?
-
-        it.skip('should not send any data in the request', (done) => {
-        });
-
-        it('should return all the response information of a JSON response', () => {
-            var server = sinon.fakeServer.create();
-            server.respondWith("GET", "http://example.com",
-                               [200,
-                                { "Content-Type": "application/json" },
-                                '{ "a": 1 }']);
-
-            var callback = sinon.spy();
-            var errback = sinon.spy();
-
-            var resp = http.get('http://example.com').then(callback, errback);
-
-            server.respond();
-
-            return resp.then(() => {
-                callback.should.have.been.calledWith({
-                    uri: 'http://example.com',
-                    body: {a: 1},
-                    headers: {'Content-Type': 'application/json'},
-                    status: 200
+                return resp.then(() => {
+                    errback.should.have.been.calledWith({
+                        uri: 'http://example.com',
+                        body: { "err": "or" },
+                        headers: {'Content-Type': 'application/json'},
+                        status: 404
+                    });
+                    callback.should.not.have.been.called;
                 });
-                errback.should.not.have.been.called;
             });
+
         });
-
-        // FIXME: fails because the response is not set, only
-        // responseText, which needs parsing based on the Content-Type
-        it.skip('should return a rejected Promise with all the response information in case of 404 error', () => {
-            var server = sinon.fakeServer.create();
-            server.respondWith("GET", "http://example.com",
-                               [404,
-                                { "Content-Type": "application/json" },
-                                '{ "err": "or" }']);
-
-            var callback = sinon.spy();
-            var errback = sinon.spy();
-
-            var resp = http.get('http://example.com').then(callback, errback);
-
-            server.respond();
-
-            return resp.then(() => {
-                errback.should.have.been.calledWith({
-                    uri: 'http://example.com',
-                    body: { "err": "or" },
-                    headers: {'Content-Type': 'application/json'},
-                    status: 404
-                });
-                callback.should.not.have.been.called;
-            });
-        });
-
-        // TODO: errors
-        // TODO: promise adapter?
     });
+
 
     // TODO: post
     // TODO: put
