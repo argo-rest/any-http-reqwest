@@ -5,6 +5,7 @@
   "homepage": "https://github.com/argo-rest/any-http-reqwest",
   "main": "index.js",
   "devDependencies": {
+    "jspm": "^0.8.4",
     "karma": "^0.12.24",
     "karma-chai": "^0.1.0",
     "karma-chai-plugins": "^0.2.3",
@@ -16,7 +17,8 @@
     "sinon": "^1.11.1"
   },
   "scripts": {
-    "test": "node_modules/karma/bin/karma start test/karma.conf.js"
+    "test": "node_modules/karma/bin/karma start test/karma.conf.js",
+    "test-setup": "node_modules/.bin/jspm install"
   },
   "keywords": [
     "anyhttp",
