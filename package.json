@@ -5,7 +5,7 @@
   "homepage": "https://github.com/argo-rest/any-http-reqwest",
   "main": "src/any-http-reqwest.js",
   "devDependencies": {
-    "jspm": "^0.10.6"
+    "jspm": "^0.10.6",
     "karma": "^0.12.24",
     "karma-chai": "^0.1.0",
     "karma-chai-plugins": "^0.2.3",
