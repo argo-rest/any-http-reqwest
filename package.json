@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "description": "AnyHTTP adapter for the reqwest library",
   "homepage": "https://github.com/argo-rest/any-http-reqwest",
-  "main": "index.js",
+  "main": "src/any-http-reqwest.js",
   "devDependencies": {
-    "jspm": "^0.8.4",
+    "jspm": "^0.10.6"
     "karma": "^0.12.24",
     "karma-chai": "^0.1.0",
     "karma-chai-plugins": "^0.2.3",
@@ -32,8 +32,8 @@
   "author": "Sébastien Cevey <seb@cine7.net>",
   "license": "Apache-2",
   "jspm": {
-    "name": "any-http-reqwest",
-    "main": "index.js",
+    "registry": "jspm",
+    "format": "es6",
     "directories": {
       "lib": "src"
     },
