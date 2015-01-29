@@ -1,4 +1,4 @@
-import {Http} from '../../index';
+import {Http} from '../../src/any-http-reqwest';
 
 describe('Http', () => {
 
