@@ -109,23 +109,14 @@ describe('Http', () => {
                 requests[0].withCredentials.should.equal(true);
             });
 
-            // TODO: crossOrigin?
-
             it('should pass the headers option to the XHR', () => {
-                // FIXME: fix test
                 http.get('http://example.com', {}, {headers: {'X-Test': 'test'}});
 
                 requests[0].requestHeaders['X-Test'].should.equal('test');
             });
 
-            it.skip('should pass underlying options to reqwest', () => {
-                // FIXME: fix test
-                http.get('http://example.com', {}, {underlying: {url: 'http://hijack.com'}});
+            // TODO: validate type?
 
-                requests[0].url.should.equal('http://hijack.com');
-            });
-
-            // TODO: type?
             // FIXME: always on?
             // it('should pass the crossOrigin option to the XHR', (done) => {
             // });
