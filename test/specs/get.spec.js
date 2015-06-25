@@ -75,7 +75,12 @@ describe('Http', () => {
                 requests[0].url.should.equal('http://example.com?x=1&y=z');
             });
 
-            // TODO: url encode params
+            it('should URL-encode the parameters in the requested uri', () => {
+                http.get('http://example.com', {x: 'hello world', y: '/a=b'});
+
+                requests[0].url.should.equal('http://example.com?x=hello+world&y=%2Fa%3Db');
+            });
+
             // TODO: fail if params not an Object?
             // TODO: ignore if undefined, null or empty Object
             // TODO: fail if options not an Object?
