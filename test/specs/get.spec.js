@@ -91,17 +91,6 @@ describe('Http', () => {
                 expect(requests[0].requestBody).to.be.null;
             });
 
-            it.skip('should pass the contentType option to the XHR', () => {
-                // FIXME: or just shouldn't be set for GET?
-            });
-
-            it.skip('should pass the headers option to the XHR', () => {
-                // FIXME: fix test
-                http.get('http://example.com', {}, {headers: {'X-Test': 'ok'}});
-
-                requests[0].headers['X-Test'].should.equal('ok');
-            });
-
             it('should pass withCredentials=false to the XHR by default', () => {
                 http.get('http://example.com', {});
 
@@ -123,8 +112,11 @@ describe('Http', () => {
             // TODO: validate type?
 
             // FIXME: always on?
-            // it('should pass the crossOrigin option to the XHR', (done) => {
-            // });
+            it.skip('should pass the crossOrigin option to the XHR', () => {
+                http.get('http://example.com', {}, {crossOrigin: true});
+
+                // ???
+            });
         });
 
 

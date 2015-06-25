@@ -19,7 +19,7 @@ function dispatch(method, uri, data, options) {
       method:  method,
       type:    'json',
       data:    data,
-      // FIXME: not for GET though?
+      // Not needed for GET, but reqwest sets a dummy default then anyway...
       // FIXME: or argo?
       contentType:     'application/json',
       headers:         options.headers,
