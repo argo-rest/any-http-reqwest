@@ -103,11 +103,19 @@ describe('Http', () => {
                 requests[0].withCredentials.should.equal(false);
             });
 
-            it.skip('should pass the withCredentials option to the XHR', () => {
-                // FIXME: fix test
+            it('should pass the withCredentials option to the XHR', () => {
                 http.get('http://example.com', {}, {withCredentials: true});
 
                 requests[0].withCredentials.should.equal(true);
+            });
+
+            // TODO: crossOrigin?
+
+            it('should pass the headers option to the XHR', () => {
+                // FIXME: fix test
+                http.get('http://example.com', {}, {headers: {'X-Test': 'test'}});
+
+                requests[0].requestHeaders['X-Test'].should.equal('test');
             });
 
             it.skip('should pass underlying options to reqwest', () => {
