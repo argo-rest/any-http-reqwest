@@ -1,4 +1,4 @@
-import {Http} from '../../index';
+import {Http} from '../../src/any-http-reqwest';
 
 describe('Http', () => {
 
@@ -98,7 +98,7 @@ describe('Http', () => {
             });
 
             it('should pass withCredentials=false to the XHR by default', () => {
-                http.get('http://example.com', {a: 1});
+                http.get('http://example.com', {});
 
                 requests[0].withCredentials.should.equal(false);
             });
