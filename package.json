@@ -1,6 +1,6 @@
 {
   "name": "any-http-reqwest",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AnyHTTP adapter for the reqwest library",
   "homepage": "https://github.com/argo-rest/any-http-reqwest",
   "main": "src/any-http-reqwest.js",
