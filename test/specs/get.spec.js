@@ -75,7 +75,12 @@ describe('Http', () => {
                 requests[0].url.should.equal('http://example.com?x=1&y=z');
             });
 
-            // TODO: url encode params
+            it('should URL-encode the parameters in the requested uri', () => {
+                http.get('http://example.com', {x: 'hello world', y: '/a=b'});
+
+                requests[0].url.should.equal('http://example.com?x=hello+world&y=%2Fa%3Db');
+            });
+
             // TODO: fail if params not an Object?
             // TODO: ignore if undefined, null or empty Object
             // TODO: fail if options not an Object?
@@ -86,41 +91,32 @@ describe('Http', () => {
                 expect(requests[0].requestBody).to.be.null;
             });
 
-            it.skip('should pass the contentType option to the XHR', () => {
-                // FIXME: or just shouldn't be set for GET?
-            });
-
-            it.skip('should pass the headers option to the XHR', () => {
-                // FIXME: fix test
-                http.get('http://example.com', {}, {headers: {'X-Test': 'ok'}});
-
-                requests[0].headers['X-Test'].should.equal('ok');
-            });
-
             it('should pass withCredentials=false to the XHR by default', () => {
-                http.get('http://example.com', {a: 1});
+                http.get('http://example.com', {});
 
                 requests[0].withCredentials.should.equal(false);
             });
 
-            it.skip('should pass the withCredentials option to the XHR', () => {
-                // FIXME: fix test
+            it('should pass the withCredentials option to the XHR', () => {
                 http.get('http://example.com', {}, {withCredentials: true});
 
                 requests[0].withCredentials.should.equal(true);
             });
 
-            it.skip('should pass underlying options to reqwest', () => {
-                // FIXME: fix test
-                http.get('http://example.com', {}, {underlying: {url: 'http://hijack.com'}});
+            it('should pass the headers option to the XHR', () => {
+                http.get('http://example.com', {}, {headers: {'X-Test': 'test'}});
 
-                requests[0].url.should.equal('http://hijack.com');
+                requests[0].requestHeaders['X-Test'].should.equal('test');
             });
 
-            // TODO: type?
+            // TODO: validate type?
+
             // FIXME: always on?
-            // it('should pass the crossOrigin option to the XHR', (done) => {
-            // });
+            it.skip('should pass the crossOrigin option to the XHR', () => {
+                http.get('http://example.com', {}, {crossOrigin: true});
+
+                // ???
+            });
         });
 
 

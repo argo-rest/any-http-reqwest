@@ -9,7 +9,7 @@ function getHeaders(request) {
   };
 }
 
-function dispatch(method, uri, data) {
+function dispatch(method, uri, data, options) {
   if (typeof uri !== 'string' || uri === '') throw new Error()
 
   // Note: don't use reqwest's promises that are not A+-compliant
@@ -19,16 +19,12 @@ function dispatch(method, uri, data) {
       method:  method,
       type:    'json',
       data:    data,
-      // FIXME: not for GET though?
+      // Not needed for GET, but reqwest sets a dummy default then anyway...
       // FIXME: or argo?
-      contentType: 'application/json',
-      headers: {
-        // FIXME: should be passed in as argument to make adapter more generic
-        'Accept': 'application/vnd.argo+json'
-      },
-// TODO: optional:
-      crossOrigin: true,
-      //withCredentials: true,
+      contentType:     'application/json',
+      headers:         options.headers,
+      crossOrigin:     options.crossOrigin,
+      withCredentials: options.withCredentials,
       success: (body) => resolve({uri: uri, body: body, status: request.status, headers: getHeaders(request)}),
       // FIXME: parse response iff json content-type
       error:   ()     => reject( {uri: uri, body: request.responseText, status: request.status, headers: getHeaders(request)})
@@ -38,25 +34,50 @@ function dispatch(method, uri, data) {
 
 
 export class Http {
-
-  get(uri, params, options) {
-    return dispatch('get', uri, params);
+  /**
+   * @param {Object} options Base set of options:
+   *  - withCredentials {boolean} Whether to send credentials
+   *  - crossOrigin {boolean} Whether to allow CORS
+   *  - headers {Object} Default headers to send
+   */
+  constructor(baseOptions = {}) {
+    this.baseOptions = baseOptions;
   }
 
-  post(uri, data, implemOptions) {
-    return dispatch('post', uri, JSON.stringify(data));
+  prepareOptions(options) {
+    // TODO: check and normalise types?
+    return Object.mixin(Object.mixin({
+      // TODO: recursively merge, e.g. headers
+      // FIXME: should be passed in as option to make adapter more generic
+      headers: {
+        'Accept': 'application/vnd.argo+json'
+      }
+    }, this.baseOptions), options);
   }
 
-  put(uri, data, implemOptions) {
-    return dispatch('put', uri, JSON.stringify(data));
+  get(uri, params, options = {}) {
+    const opts = this.prepareOptions(options);
+    return dispatch('get', uri, params, opts);
   }
 
-  patch(uri, data, implemOptions) {
-    return dispatch('patch', uri, JSON.stringify(data));
+  post(uri, data, options = {}) {
+    const opts = this.prepareOptions(options);
+    return dispatch('post', uri, JSON.stringify(data), opts);
   }
 
-  delete(uri, implemOptions) {
-    return dispatch('delete', uri);
+  put(uri, data, options = {}) {
+    const opts = this.prepareOptions(options);
+    return dispatch('put', uri, JSON.stringify(data), opts);
+  }
+
+  patch(uri, data, options = {}) {
+    const opts = this.prepareOptions(options);
+    return dispatch('patch', uri, JSON.stringify(data), opts);
+  }
+
+  delete(uri, options = {}) {
+    const opts = this.prepareOptions(options);
+    return dispatch('delete', uri, undefined, opts);
   }
 
 }
