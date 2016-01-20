@@ -46,7 +46,7 @@ export class Http {
 
   prepareOptions(options) {
     // TODO: check and normalise types?
-    return Object.mixin(Object.mixin({
+    return Object.assign(Object.assign({
       // TODO: recursively merge, e.g. headers
       // FIXME: should be passed in as option to make adapter more generic
       headers: {
